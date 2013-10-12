@@ -1,0 +1,21 @@
+      bool export_to_excel_tb2(DataTable dt)
+        {
+            GridviewToExcel.export2Excel excel = new GridviewToExcel.export2Excel();
+
+            excel.ExportToExcel(dt.DefaultView, @"c:\NGram_" + txt_browse.Text + "_" + chiejramishe + ".xlsx", txt_Sheetname.Text);
+
+            return true;
+
+        }
+
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
