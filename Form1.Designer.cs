@@ -64,7 +64,7 @@
             // 
             // btnExportToExcel
             // 
-            this.btnExportToExcel.Image = global::WindowsFormsApplication2.Properties.Resources.excel;
+            this.btnExportToExcel.Image = global::parser_myket_dot_com_android.Properties.Resources.excel;
             this.btnExportToExcel.Location = new System.Drawing.Point(335, 198);
             this.btnExportToExcel.Name = "btnExportToExcel";
             this.btnExportToExcel.Size = new System.Drawing.Size(70, 34);

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WindowsFormsApplication2.Properties {
+namespace parser_myket_dot_com_android.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

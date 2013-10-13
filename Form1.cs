@@ -22,13 +22,8 @@ namespace WindowsFormsApplication2
     public partial class Form1 : Form
     {
         DataTable dt_export_myket = new DataTable("myket");
-
-
         //Dictionary<string, int> dic = new Dictionary<string, int>();
-
-
         string path = @"C:\My Web Sites\cafebazar\http___myket.ir_\myket.ir";
-
         public Form1()
         {
             InitializeComponent();
@@ -36,20 +31,19 @@ namespace WindowsFormsApplication2
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
             dt_export_myket.Columns.Add(new DataColumn("rate", typeof(float)));
             dt_export_myket.Columns.Add(new DataColumn("name", typeof(string)));
-            dt_export_myket.Columns.Add(new DataColumn("ver", typeof(float)));
+            dt_export_myket.Columns.Add(new DataColumn("ver", typeof(string)));
             dt_export_myket.Columns.Add(new DataColumn("lastupdatedatepersian", typeof(string)));
-            dt_export_myket.Columns.Add(new DataColumn("download", typeof(int)));
-            dt_export_myket.Columns.Add(new DataColumn("size", typeof(float)));
+            dt_export_myket.Columns.Add(new DataColumn("download", typeof(string)));
+            dt_export_myket.Columns.Add(new DataColumn("size", typeof(string)));
             dt_export_myket.Columns.Add(new DataColumn("price", typeof(float)));
             dt_export_myket.Columns.Add(new DataColumn("creator", typeof(string)));
             dt_export_myket.Columns.Add(new DataColumn("packagename", typeof(string)));
             dt_export_myket.Columns.Add(new DataColumn("describtion", typeof(string)));
             dt_export_myket.Columns.Add(new DataColumn("similarapp", typeof(string)));
 
-            textBox1.Text = "25000";
+            textBox1.Text = "25";
             readAllFilesinSubfolders(int.Parse(textBox1.Text));
             //parse2222222222222("http://www.myket.ir/Default.aspx");
 
@@ -62,7 +56,6 @@ namespace WindowsFormsApplication2
             //    //    dt_export_myket.Rows.Add(4.5, "name", 2, "1392/12/12", 5000, 5.9, 0, "creator", packagename, "describtion", "similarapp");
             //    dt_export_myket.Rows.Add(4.5, "name", pair.Value, "1392/12/12", 5000, 5.9, 0, "creator", pair.Key, "describtion", "similarapp");
             //}
-
         }
 
         private void readAllFilesinSubfolders(int count_of_)
@@ -71,7 +64,7 @@ namespace WindowsFormsApplication2
 
             var dir = new DirectoryInfo(path);
             int j = 1;
-            foreach (var file in dir.EnumerateFiles("*.html", SearchOption.AllDirectories))
+            foreach (var file in dir.EnumerateFiles("appd*.html", SearchOption.AllDirectories))
             {
                 
                 //if(file.ToString().Substring(0,8)=="appdetail")
@@ -105,10 +98,10 @@ namespace WindowsFormsApplication2
         {
             float rate = 0;
             string name = "";
-            float ver=0;
+            string ver="0";
             string lastupdatedatepersian = "";
-            int download=0;
-            float size=0;
+            string download="0";
+            string size="0MB";
             float price=0;
             string creator="";
             string packagename="";
@@ -127,16 +120,160 @@ namespace WindowsFormsApplication2
                     foreach (var item in a)
                     {
                         HtmlNode embed = item.SelectSingleNode("//a[@id='Body_detailsControl_creatorApps']");
+                        //HtmlNode stringrate = item.SelectSingleNode("//img[@id='Body_detailsControl_ratingDiv']");
                         if (embed != null)
                         {
                             packagename = findTag("Packagename", packagename, embed);
+                            rate = findtagrate("rs/Rate", rate, item);
+                            //rate daghigh
+                            // ظ…غŒط§ظ†ع¯غŒظ† 4.34 ط§ط² 5
+                            name = embed.InnerHtml;
+                            //<span>ظ†ط³ط®ظ‡ :</span>
+                            ver = findtagver("<span>ظ†ط³ط®ظ‡ :</span>","<", ver, item);
+                            size = findtagsize("</li><li><span>ط³ط§غŒط² :</span>", "<", size, item);
+                            lastupdatedatepersian = findtagdate("<span>ط¢ط®ط±غŒظ† ط¨ظ‡ ط±ظˆط²ط±ط³ط§ظ†غŒ :</span>", "<", lastupdatedatepersian, item);
+                            download = findtagdl("<span>طھط¹ط¯ط§ط¯ ط¯ط§ظ†ظ„ظˆط¯ :</span>", "<", download, item);
                         }
                     }
                     if (lastpackagenam != packagename)
-                        dt_export_myket.Rows.Add(4.5, "name", 2, "1392/12/12", 5000, 5.9, 0, "creator", packagename, "describtion", "similarapp");
+                        dt_export_myket.Rows.Add(rate, name, ver, lastupdatedatepersian, download, size, 0, "creator", packagename, "describtion", "similarapp");
                 }
             }
             return packagename;
+        }
+
+        private string findtagdl(string thisstring, string tothistag, string download, HtmlNode item)
+        {
+            string dlssss = "0";
+            string dlss = "0";
+            string ht_cola = item.InnerHtml.ToString();
+            if (ht_cola.Contains(thisstring))
+            {
+                int start_index = ht_cola.IndexOf(thisstring) + thisstring.Length;
+                //int end_index = ht_cola.IndexOf("</li><li><span>ط³ط§غŒط² :</span>");
+                //if (start_index < end_index)
+                dlssss = ht_cola.Substring(start_index, 30);
+                int endi = dlssss.IndexOf(tothistag);
+                dlss = dlssss.Substring(0, endi-1);
+
+                if (dlss.IndexOf(" ") > 0 && dlss.IndexOf(" ") < 6)
+                {
+                    endi = dlssss.IndexOf(" ");
+                    dlss = dlss.Substring(0, endi);
+                }
+                //else if (dlss.IndexOf("²") > 0)
+                //{
+                //    int sti = dlssss.IndexOf("²");
+                //    endi = dlssss.IndexOf(" ");
+                //    dlss = dlss.Substring(13, endi - 13);
+                //}
+                //else if (dlss.IndexOf("ع") < 1)
+                //{
+                //    int sti = dlssss.IndexOf(" ");
+                //    endi = dlssss.IndexOf("ع©ظ…طھط± ط§ط²")-"ع©ظ…طھط± ط§ط²".Length - sti;
+                //    dlss = dlss.Substring(sti, endi);                //"rate","name","ver","lastupdatedatepersian","download","size","price","creator","packagename"
+                //}
+            }
+            //if (int.Parse(dlss)!=null)
+            //    download = int.Parse(dlss);
+            ////else
+            ////{
+            ////    int endi = dlssss.IndexOf(" ");
+            ////    dlss = dlss.Substring(0, endi);
+            ////    download = int.Parse(dlss);
+            ////}
+            ////else
+            ////    ver = float.Parse(vers[0].ToString());
+            //return download;
+            return dlss;
+        }
+
+        private string findtagdate(string thisstring, string tothistag, string lastupdatedatepersian, HtmlNode item)
+        {
+            string datessss = "1/11/2011";
+            string datess = "1/11/2011";
+            string ht_cola = item.InnerHtml.ToString();
+            if (ht_cola.Contains(thisstring))
+            {
+                int start_index = ht_cola.IndexOf(thisstring) + thisstring.Length;
+                //int end_index = ht_cola.IndexOf("</li><li><span>ط³ط§غŒط² :</span>");
+                //if (start_index < end_index)
+                datessss = ht_cola.Substring(start_index, 30);
+                int endi = datessss.IndexOf(tothistag);
+                datess = datessss.Substring(0, endi);
+
+                //"rate","name","ver","lastupdatedatepersian","download","size","price","creator","packagename"
+            }
+            //if (float.Parse(vers) != 0)
+            //size = float.Parse(sizess);
+            //else
+            //    ver = float.Parse(vers[0].ToString());
+            return datess;
+        }
+
+        private string findtagsize(string thisstring, string tothistag, string size, HtmlNode item)
+        {
+            string sizessss = "0";
+            string sizess = "0";
+            string ht_cola = item.InnerHtml.ToString();
+            if (ht_cola.Contains(thisstring))
+            {
+                int start_index = ht_cola.IndexOf(thisstring) + thisstring.Length;
+                //int end_index = ht_cola.IndexOf("</li><li><span>ط³ط§غŒط² :</span>");
+                //if (start_index < end_index)
+                sizessss = ht_cola.Substring(start_index, 30);
+                int endi = sizessss.IndexOf(tothistag);
+                sizess = sizessss.Substring(0, endi);
+
+                //"rate","name","ver","lastupdatedatepersian","download","size","price","creator","packagename"
+            }
+            //if (float.Parse(vers) != 0)
+            //size = float.Parse(sizess);
+            //else
+            //    ver = float.Parse(vers[0].ToString());
+            return sizess;
+        }
+
+        private string findtagver(string thisstring,string tothistag, string ver, HtmlNode item)
+        {
+            string veresss = "0";
+            string vers = "0";
+            string ht_cola = item.InnerHtml.ToString();
+            if (ht_cola.Contains(thisstring))
+            {
+                int start_index = ht_cola.IndexOf(thisstring) + thisstring.Length;
+                //int end_index = ht_cola.IndexOf("</li><li><span>ط³ط§غŒط² :</span>");
+                //if (start_index < end_index)
+                    veresss = ht_cola.Substring(start_index, 30);
+                    int endi = veresss.IndexOf(tothistag);
+                vers = veresss.Substring(0, endi);
+
+                //"rate","name","ver","lastupdatedatepersian","download","size","price","creator","packagename"
+            }
+            //if (float.Parse(vers) != 0)
+            //    ver = float.Parse(vers);
+            //else
+            //    ver = float.Parse(vers[0].ToString());
+            return vers;
+        }
+
+        private float findtagrate(string thisstring, float rate, HtmlNode item)
+        {
+            string ratesss="0";
+            string ht_cola = item.InnerHtml.ToString();
+            if (ht_cola.Contains(thisstring))
+            {
+                int start_index = ht_cola.IndexOf(thisstring) + thisstring.Length;
+                int end_index = ht_cola.IndexOf(".png");
+                if (start_index < end_index)
+                    ratesss = ht_cola.Substring(start_index, end_index - start_index);
+                //"rate","name","ver","lastupdatedatepersian","download","size","price","creator","packagename"
+            }
+            if (float.Parse(ratesss) != 0)
+                rate = float.Parse(ratesss) / 10;
+            else
+                rate = float.Parse(ratesss[0].ToString());
+            return rate;
         }
 
         private static string findTag(string thisstring,string packagename, HtmlNode embed)
@@ -154,8 +291,6 @@ namespace WindowsFormsApplication2
             return packagename;
         }
         
-
-
         private string read(string fileName)
         {
             Encoding encoding = Encoding.GetEncoding(1252);

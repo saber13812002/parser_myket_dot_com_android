@@ -7,8 +7,8 @@
     <ProjectGuid>{B21D0A1A-D8B2-4470-B53B-5899289BB459}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WindowsFormsApplication2</RootNamespace>
-    <AssemblyName>WindowsFormsApplication2</AssemblyName>
+    <RootNamespace>parser_myket_dot_com_android</RootNamespace>
+    <AssemblyName>parser_myket_dot_com_android</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
