@@ -37,7 +37,7 @@ namespace WindowsFormsApplication2
             dt_export_myket.Columns.Add(new DataColumn("lastupdatedatepersian", typeof(string)));
             dt_export_myket.Columns.Add(new DataColumn("download", typeof(string)));
             dt_export_myket.Columns.Add(new DataColumn("size", typeof(string)));
-            dt_export_myket.Columns.Add(new DataColumn("price", typeof(float)));
+            dt_export_myket.Columns.Add(new DataColumn("price", typeof(string)));
             dt_export_myket.Columns.Add(new DataColumn("creator", typeof(string)));
             dt_export_myket.Columns.Add(new DataColumn("packagename", typeof(string)));
             dt_export_myket.Columns.Add(new DataColumn("describtion", typeof(string)));
@@ -102,7 +102,7 @@ namespace WindowsFormsApplication2
             string lastupdatedatepersian = "";
             string download="0";
             string size="0MB";
-            float price=0;
+            string price="0";
             string creator="";
             string packagename="";
 
@@ -133,13 +133,40 @@ namespace WindowsFormsApplication2
                             size = findtagsize("</li><li><span>ط³ط§غŒط² :</span>", "<", size, item);
                             lastupdatedatepersian = findtagdate("<span>ط¢ط®ط±غŒظ† ط¨ظ‡ ط±ظˆط²ط±ط³ط§ظ†غŒ :</span>", "<", lastupdatedatepersian, item);
                             download = findtagdl("<span>طھط¹ط¯ط§ط¯ ط¯ط§ظ†ظ„ظˆط¯ :</span>", "<", download, item);
+                        //                </li><li><span>ظ‚غŒظ…طھ (طھظˆظ…ط§ظ†) :</span>ط±ط§غŒع¯ط§ظ†</li></div>
+                        //<li><span>
+                            price = findtagPrice("</li><li><span>ظ‚غŒظ…طھ (طھظˆظ…ط§ظ†) :</span>", "<", price, item);
+
                         }
                     }
                     if (lastpackagenam != packagename)
-                        dt_export_myket.Rows.Add(rate, name, ver, lastupdatedatepersian, download, size, 0, "creator", packagename, "describtion", "similarapp");
+                        dt_export_myket.Rows.Add(rate, name, ver, lastupdatedatepersian, download, size, price, "creator", packagename, "describtion", "similarapp");
                 }
             }
             return packagename;
+        }
+
+        private string findtagPrice(string thisstring, string tothistag, string price, HtmlNode item)
+        {
+            string Pricessss = "0";
+            string Pricess = "0";
+            string ht_cola = item.InnerHtml.ToString();
+            if (ht_cola.Contains(thisstring))
+            {
+                int start_index = ht_cola.IndexOf(thisstring) + thisstring.Length;
+                Pricessss = ht_cola.Substring(start_index, 30);
+                int endi = Pricessss.IndexOf(tothistag);
+                Pricess = Pricessss.Substring(0, endi - 1);
+
+                if (Pricess.IndexOf(" ") > 0 && Pricess.IndexOf(" ") < 6)
+                {
+                    endi = Pricessss.IndexOf(" ");
+                    Pricess = Pricess.Substring(0, endi);
+                }
+
+            }
+
+            return Pricess;
         }
 
         private string findtagdl(string thisstring, string tothistag, string download, HtmlNode item)
